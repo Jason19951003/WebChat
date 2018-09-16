@@ -55,6 +55,47 @@ public class DBUtil {
 		return exist;
 	}
 	
+	public static boolean checkUserExists(Map<String, Object> paramMap) throws SQLException {
+		String accout = (String) paramMap.get("accout");
+		if (accout != null) {
+			return checkUserExists(accout);
+		} else {
+			return false;
+		}
+	}
+	
+	public static boolean userLogin(Map<String, Object> parmMap) throws SQLException {
+		boolean exist = true;
+		ResultSet rs = null;
+		String accont = (String)parmMap.get("account");
+		String password = (String)parmMap.get("password");
+		try {
+			con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/test", "root", "123456");
+			st = con.createStatement();
+			rs = st.executeQuery("SELECT account AS TOTAL FROM mychat where account = '" + accont + "' and password = '" + password + "'");
+			
+			int row = 0;
+			while (rs.next()) {
+				row++;
+			}
+			if (row == 0) {
+				exist = false;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (con != null) {
+				con.close();
+			}
+			if (st != null) {
+				st.close();
+			}
+			if (rs != null) {
+				rs.close();
+			}
+		}
+		return exist;
+	}
 	public static int insertUser(Map<String, Object> paramMap) throws SQLException, FileNotFoundException {
 		int execute = 0;
 		try {

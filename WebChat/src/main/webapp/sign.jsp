@@ -1,11 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ include file="head.jsp" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>註冊頁面</title>
-<script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
-<script type="text/javascript" src="js/jquery.form.js"></script>
 <script type="text/javascript">
 	function signUp() {
 		if ($("input[name=account]").val() === "") {
@@ -34,31 +33,54 @@
 		       ,cache: false
 		       ,contentType: false
 			   ,success : function (data) {
-				   alert(data.message);
+				   if (data.MESSAGE == 'Y') {
+					   document.getElementById("myform").submit();
+				   } else {
+					   alert(data.MESSAGE);
+				   }
 			   }
 		});
 	}
+	function clean() {
+		document.getElementById("myform").reset();
+	}
 </script>
+<style type="text/css">
+	body {
+		font-size: 20px;
+	}
+	span {
+		color : yellow;
+	}
+</style>
 </head>
-<body style="background-color: black">
+<body style="background-color: 	black">
 	<div style="width: 500px; height: 500px; margin: auto; position: absolute; bottom: 0; top: 0; left : 0; right : 0;">
-		<form id="myform">
-			<table>
+		<form id="myform" action="/WebChat/chat.jsp">
+			<table style="text-align: right">
 				<tr>
-					<td><span style="color: yellow">帳號：</span></td>
-					<td><input type="text" name="account"></td>
+					<td><span>帳號：</span></td>
+					<td style="text-align: left; height: 50px;"><input type="text" name="account"></td>
 				</tr>
 				<tr>
-					<td><span style="color: yellow">密碼：</span></td>
-					<td><input type="password" name="password"></td>
+					<td><span>密碼：</span></td>
+					<td style="text-align: left; height: 50px;"><input type="password" name="password"></td>
 				</tr>
 				<tr>
-					<td><span style="color: yellow">暱稱：</span></td>
-					<td><input type="text" name="nickname"></td>
+					<td><span>暱稱：</span></td>
+					<td style="text-align: left; height: 50px;"><input type="text" name="nickname"></td>
 				</tr>
 				<tr>
-					<td colspan="2">
-						<input type="button" name="sign" value="註冊" onclick="signUp();">
+					<td><span>大頭貼：</span></td>
+					<td style="text-align: left; height: 50px;"><input type="file" name="image" style="color: yellow"></td>
+				</tr>
+				<tr>
+					<td>
+						
+					</td>
+					<td style="text-align: left">
+						<input type="button" name="sign" value="註冊" onclick="signUp();" class="btn btn-default">
+						<input type="button" name="sign" value="清空" onclick="clean();" class="btn btn-default">
 					</td>
 				</tr>
 			</table>

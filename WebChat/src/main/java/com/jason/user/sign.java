@@ -1,13 +1,7 @@
 package com.jason.user;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -50,16 +44,16 @@ public class sign extends HttpServlet {
 		
 		String account = (String) paramMap.get("account");
 		try {
-			if (DBUtil.checkUserExists(account)) {				
+			if (DBUtil.checkUserExists(account)) {
 				int execute = DBUtil.insertUser(paramMap);
 				
 				if (execute > 0) {
-					json.put("message", "成功!");
+					json.put("MESSAGE", "Y");
 				} else {
-					json.put("message", "失敗!");
+					json.put("MESSAGE", "失敗!");
 				}
 			} else {
-				json.put("message", "該用戶已存在!");
+				json.put("MESSAGE", "該用戶已存在!");
 			}
 						
 		} catch (SQLException e) {
