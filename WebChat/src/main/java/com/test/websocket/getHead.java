@@ -1,7 +1,8 @@
-package com.jason.user;
+package com.test.websocket;
 
 import java.io.IOException;
-import java.util.Map;
+import java.io.InputStream;
+import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -9,50 +10,50 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.json.JSONObject;
-
+import com.jason.user.UserProfile;
 import com.jason.util.DBUtil;
-import com.jason.util.RequestBean;
 
 /**
- * Servlet implementation class login
+ * Servlet implementation class getHead
  */
-@WebServlet("/login")
-public class login extends HttpServlet {
+@WebServlet("/getHead")
+public class getHead extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public login() {
-        super();
+    public getHead() {
+        super();        
     }
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.setCharacterEncoding("UTF-8");
-		response.setContentType("text/html;charset=UTF-8");
+		String account = request.getParameter("account");
 		
-		RequestBean requstBean = RequestBean.buildRequestBean(request);
-		Map<String, Object> paramMap = requstBean.getRequestMap();
-		JSONObject json = new JSONObject();
 		try {
-			if (DBUtil.userLogin(paramMap)) {
-				UserProfile userProfile = DBUtil.getUserProfile(paramMap);
-				json.put("NICKNAME", userProfile.getNickname());
-				json.put("MESSAGE", "");
+			UserProfile userProfile = DBUtil.getUserProfile(account);
+			InputStream in = null;
+			
+			int len = 0;
+			byte buffer[] = new byte[8192];
+			
+			if (userProfile.getImage() != null) {
+				in = userProfile.getImage().getBinaryStream();
 			} else {
-				json.put("MESSAGE", "帳號密碼錯誤!");
+				in = this.getClass().getClassLoader().getResourceAsStream("NoHead.jpg");
 			}
-		} catch (Exception e) {
+			
+			while ((len = in.read(buffer)) > 0) {
+				response.getOutputStream().write(buffer, 0, len);
+			}
+			
+			in.close();
+		} catch (SQLException e) {
 			e.printStackTrace();
-			json.put("MESSAGE", e);
-			response.getWriter().print(json);
 		}
-		
-		response.getWriter().print(json);
 	}
 
 	/**

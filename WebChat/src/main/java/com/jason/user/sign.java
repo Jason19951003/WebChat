@@ -48,6 +48,8 @@ public class sign extends HttpServlet {
 				int execute = DBUtil.insertUser(paramMap);
 				
 				if (execute > 0) {
+					UserProfile userProfile = DBUtil.getUserProfile(paramMap);
+					json.put("NICKNAME", userProfile.getNickname());
 					json.put("MESSAGE", "Y");
 				} else {
 					json.put("MESSAGE", "失敗!");

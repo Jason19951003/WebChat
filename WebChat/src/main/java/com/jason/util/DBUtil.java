@@ -3,13 +3,17 @@ package com.jason.util;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
 import java.util.Map;
+
+import com.jason.user.UserProfile;
 
 public class DBUtil {
 	private static Connection con = null;
@@ -24,6 +28,42 @@ public class DBUtil {
 		}
 	}
 	
+	public static UserProfile getUserProfile(Map<String, Object> paramMap) throws SQLException {
+		if (paramMap.get("account") != null) {
+			return getUserProfile((String)paramMap.get("account"));
+		} else {
+			return null;
+		}
+	}
+	
+	public static UserProfile getUserProfile(String userId) throws SQLException {
+		ResultSet rs = null;
+		UserProfile userprofile = new UserProfile();
+		try {
+			con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/test", "root", "123456");
+			st = con.createStatement();
+			rs = st.executeQuery("SELECT * FROM mychat where account = '" + userId + "'");
+			
+			while (rs.next()) {
+				userprofile.setAccount(rs.getString("account"));
+				userprofile.setPassword(rs.getString("password"));
+				userprofile.setNickname(rs.getString("nickname"));
+				userprofile.setImage(rs.getBlob("image"));
+				return userprofile;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (con != null) {
+				con.close();
+			}
+			if (st != null) {
+				st.close();
+			}
+		}
+		
+		return null;
+	}
 	public static boolean checkUserExists(String userId) throws SQLException {
 		boolean exist = false;
 		ResultSet rs = null;
@@ -124,8 +164,7 @@ public class DBUtil {
 			if (ps != null) {
 				ps.close();
 			}
-		}
-		
+		}		
 		return execute;
 	}
 }

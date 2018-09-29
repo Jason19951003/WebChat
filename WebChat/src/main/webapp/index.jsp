@@ -36,6 +36,7 @@
 					   if (data.MESSAGE != "") {
 						   alert(data.MESSAGE);
 					   } else {
+						   $("input[name=nickname]").val(data.NICKNAME);
 						   document.getElementById("myform").submit();
 					   }
 				   }
@@ -74,6 +75,7 @@
 	<img class="head" src="image/head.png">
 	<div style="width: 500px; height: 500px; margin: auto; position: absolute; bottom: 0; top: 0; left : 0; right : 0;">
 		<form id="myform" action="/WebChat/chat.jsp" method="post">
+			<input type="hidden" name="nickname">
 			<table style="text-align: right">
 				<tr>
 					<td><span>帳號：</span></td>
